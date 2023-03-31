@@ -19,6 +19,8 @@ let cze = document.getElementById('customz');
 let cwe = document.getElementById('customw');
 /** @type {HTMLImageElement} */
 let imge = document.getElementById('glimg');
+/** @type {HTMLImageElement} */
+let lightimg = document.getElementById('lightimg');
 /** @type {HTMLInputElement} */
 let toggleAbsoluteViewport = document.getElementById('usepxviewport');
 
@@ -65,12 +67,14 @@ const uniform = {
 
 /** @type {GLuint} */
 let userTexture = null;
+/** @type {GLuint} */
+let lightTexture = null;
 
 let useAbsoluteViewport = false;
 let customX = 0;
 let customY = 0;
 let customZ = 0;
-let customW = 0;
+let customW = 1;
 
 let compileTime = Date.now();
 
@@ -156,7 +160,7 @@ function main() {
     positionBuffer = gl.createBuffer();
     texcoordBuffer = gl.createBuffer();
     indexBuffer = gl.createBuffer();
-    
+
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
     gl.bindBuffer(gl.ARRAY_BUFFER, texcoordBuffer);
@@ -167,7 +171,7 @@ function main() {
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     gl.enableVertexAttribArray(attributeLoc.position);
     gl.vertexAttribPointer(
-        attributeLoc.position,  
+        attributeLoc.position,
         2, // 2 values per vertex shader iteration
         gl.FLOAT, // data is 32bit floats
         false,        // don't normalize
@@ -178,7 +182,7 @@ function main() {
     gl.bindBuffer(gl.ARRAY_BUFFER, texcoordBuffer);
     gl.enableVertexAttribArray(attributeLoc.texcoord);
     gl.vertexAttribPointer(
-        attributeLoc.texcoord,  
+        attributeLoc.texcoord,
         2,
         gl.FLOAT,
         false, // normalize
@@ -187,27 +191,43 @@ function main() {
     );
 
 
-    // userTexture = gl.createTexture();
-    // gl.bindTexture(gl.TEXTURE_2D, userTexture);
-    // const level = 0;
-    // const internalFormat = gl.RGBA;
-    // const width = 1;
-    // const height = 1;
-    // const border = 0;
-    // const srcFormat = gl.RGBA;
-    // const srcType = gl.UNSIGNED_BYTE;
-    // // const pixel = new Uint8Array([0, 0, 255, 255]); // opaque blue
-    // gl.texImage2D(
-    //     gl.TEXTURE_2D,
-    //     level,
-    //     internalFormat,
-    //     width,
-    //     height,
-    //     border,
-    //     srcFormat,
-    //     srcType,
-    //     imge
-    // );
+    userTexture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, userTexture);
+    const level = 0;
+    const internalFormat = gl.RGBA;
+    const border = 0;
+    const srcFormat = gl.RGBA;
+    const srcType = gl.UNSIGNED_BYTE;
+    // const pixel = new Uint8Array([0, 0, 255, 255]); // opaque blue
+    gl.texImage2D(
+        gl.TEXTURE_2D,
+        level,
+        internalFormat,
+        imge.width,
+        imge.height,
+        border,
+        srcFormat,
+        srcType,
+        imge
+    );
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    lightTexture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, lightTexture);
+    gl.texImage2D(
+        gl.TEXTURE_2D,
+        level,
+        internalFormat,
+        lightimg.width,
+        lightimg.height,
+        border,
+        srcFormat,
+        srcType,
+        lightimg
+    );
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+
 
     requestAnimationFrame(tick);
 
@@ -224,6 +244,10 @@ function tick() {
 
     gl.useProgram(shaderProgram);
 
+    gl.bindTexture(gl.TEXTURE_2D, userTexture);
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, lightTexture);
+    gl.activeTexture(gl.TEXTURE1);
     gl.uniform4f(uniform.userParam, customX, customY, customZ, customW);
     gl.uniform2ui(uniform.viewportSize, gl.canvas.width, gl.canvas.height);
     gl.uniform1ui(uniform.time, Date.now() - compileTime);

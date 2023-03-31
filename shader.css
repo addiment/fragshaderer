@@ -8,12 +8,12 @@
 
 #ccontain {
     width: fit-content;
-    height: 480px;
+    height: fit-content
 }
 
 textarea {
     width: 640px;
-    height: 100%;
+    height: 480px;
     resize: none;
 }
 
