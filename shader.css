@@ -1,0 +1,40 @@
+.good {
+    color: limegreen
+}
+
+.bad {
+    color: crimson;
+}
+
+#ccontain {
+    width: fit-content;
+    height: 480px;
+}
+
+textarea {
+    width: 640px;
+    height: 100%;
+    resize: none;
+}
+
+div#controlsd {
+    margin: 0;
+    margin-top: 4px;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+    width: fit-content;
+    gap: 16px;
+}
+
+div.dfc {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+p {
+    margin: 16px;
+}

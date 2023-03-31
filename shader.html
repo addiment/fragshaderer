@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="shader.css">
+    <title>Fragment Shader Sandbox</title>
+</head>
+
+<body>
+    <div id="ccontain">
+        <canvas id="glcanv" width="640" height="480">No WebGL?</canvas>
+        <textarea id="fragsrc">#version 300 es
+            #version 300 es
+            #define PI 3.141592
+            precision highp float;
+            
+            // replacement for gl_FragColor
+            out vec4 fragColor;
+            in vec2 texcoord;
+            uniform uvec2 viewportSize; 
+            uniform vec4 userParam;
+            uniform uint time;
+            
+            float d(vec2 uv) {
+                return sqrt(pow(0.5 - uv.x, 2.0) + pow(0.5 - uv.y, 2.0));
+            }
+            
+            void main() {
+                float a = PI * (texcoord.x - 0.5)
+                vec2 v = vec2(cos(a), sin(a)) * (texcoord.y / 2.0);
+                fragColor = vec4(
+                    mix(
+                        texcoord,
+                        // {0.5, 0.5} = center
+                        vec2(0.5, 0.5) + v,
+                        // lerp amount
+                        vec2((userParam.w + 2.0) / 4.0)
+                    ),
+                    0.0,
+                    1.0
+                );
+            }            
+        </textarea>
+    </div>
+    <div id="controlsd">
+        <button id="bcompile">Compile</button>
+        <div class="dfc"><input type="range" id="customx" min="-2" max="2" step="0.1" value="0"><label
+                for="customx">X</label></div>
+        <div class="dfc"><input type="range" id="customy" min="-2" max="2" step="0.1" value="0"><label
+                for="customy">Y</label></div>
+        <div class="dfc"><input type="range" id="customz" min="-2" max="2" step="0.1" value="0"><label
+                for="customz">Z</label></div>
+        <div class="dfc"><input type="range" id="customw" min="-2" max="2" step="0.1" value="0"><label
+                for="customw">W</label></div>
+        <div class="dfc"><input type="checkbox" id="usepxviewport"><label for="usepxviewport">Use absolute
+                viewport</label></div>
+        <p>Status: <span id="glstatus" class="good">Compiled</span></p>
+    </div>
+    <img id="glimg" src="Water-rippling178.jpg">
+</body>
+
+<script src="shader.js"></script>
+
+</html>
