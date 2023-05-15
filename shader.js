@@ -27,13 +27,13 @@ let toggleAbsoluteViewport = document.getElementById('usepxviewport');
 const vertexSource = `#version 300 es
 
 in vec2 a_position;
-in vec2 a_texcoord;
+in vec2 a_texCoord;
 
-out vec2 texcoord;
+out vec2 texCoord;
 
 void main() {
     gl_Position = vec4(a_position, 0.0, 1.0);
-    texcoord = a_texcoord;
+    texCoord = a_texCoord;
 }
 `;
 
@@ -44,7 +44,7 @@ let shaderProgram = null;
 /** @type {WebGLBuffer} */
 let positionBuffer = null;
 /** @type {WebGLBuffer} */
-let texcoordBuffer = null;
+let texCoordBuffer = null;
 /** @type {WebGLBuffer} */
 let indexBuffer = null;
 
@@ -52,7 +52,7 @@ const attributeLoc = {
     /** @property {GLuint>} */
     position: null,
     /** @property {GLuint>} */
-    texcoord: null
+    texCoord: null
 }
 
 const uniform = {
@@ -135,7 +135,7 @@ function updateShaders() {
     shaderProgram = p;
     // attributes
     attributeLoc.position = gl.getAttribLocation(shaderProgram, 'a_position');
-    attributeLoc.texcoord = gl.getAttribLocation(shaderProgram, 'a_texcoord');
+    attributeLoc.texCoord = gl.getAttribLocation(shaderProgram, 'a_texCoord');
     // uniforms
     uniform.userParam = gl.getUniformLocation(shaderProgram, 'userParam');
     uniform.viewportSize = gl.getUniformLocation(shaderProgram, 'viewportSize');
@@ -158,12 +158,12 @@ function main() {
     updateShaders();
 
     positionBuffer = gl.createBuffer();
-    texcoordBuffer = gl.createBuffer();
+    texCoordBuffer = gl.createBuffer();
     indexBuffer = gl.createBuffer();
 
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
-    gl.bindBuffer(gl.ARRAY_BUFFER, texcoordBuffer);
+    gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, coords, gl.STATIC_DRAW);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
@@ -179,10 +179,10 @@ function main() {
         0,            // offset into buffer
     );
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, texcoordBuffer);
-    gl.enableVertexAttribArray(attributeLoc.texcoord);
+    gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
+    gl.enableVertexAttribArray(attributeLoc.texCoord);
     gl.vertexAttribPointer(
-        attributeLoc.texcoord,
+        attributeLoc.texCoord,
         2,
         gl.FLOAT,
         false, // normalize
