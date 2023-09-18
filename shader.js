@@ -250,7 +250,7 @@ function tick() {
     gl.activeTexture(gl.TEXTURE1);
     gl.uniform4f(uniform.userParam, customX, customY, customZ, customW);
     gl.uniform2ui(uniform.viewportSize, gl.canvas.width, gl.canvas.height);
-    gl.uniform1ui(uniform.time, Date.now() - compileTime);
+    gl.uniform1f(uniform.time, Date.now() - compileTime);
 
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
