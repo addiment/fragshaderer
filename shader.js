@@ -86,10 +86,10 @@ const vertices = new Float32Array([
 ]);
 
 const coords = new Float32Array([
-    0.0, 0.0,
-    1.0, 0.0,
     0.0, 1.0,
-    1.0, 1.0
+    1.0, 1.0,
+    0.0, 0.0,
+    1.0, 0.0
 ]);
 
 const indices = new Uint16Array([
