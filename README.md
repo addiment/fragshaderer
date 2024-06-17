@@ -1,5 +1,10 @@
 # fragshaderer
+
 WebGL fragment shader "playground"
+
+## Credits
+
+- A sample image from [Kodak](https://r0k.us/graphics/kodak/)
 
 ## Why?
 

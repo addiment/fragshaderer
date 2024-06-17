@@ -5,47 +5,87 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://rsms.me/">
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
     <link rel="stylesheet" href="shader.css">
     <title>Fragment Shader Sandbox</title>
 </head>
 
 <body>
     <div id="ccontain">
-        <canvas id="glcanv" width="640" height="480">No WebGL?</canvas>
+        <canvas id="glcanv" width="640" height="480">WebGL/JavaScript is unsupported or disabled!</canvas>
         <textarea id="fragsrc" spellcheck="false">
 #version 300 es
 #define PI 3.141592
 precision highp float;
 
-// replacement for gl_FragColor
 out vec4 fragColor;
 in highp vec2 texCoord;
 uniform float time;
 uniform uvec2 viewportSize; 
 uniform vec4 userParam;
 uniform sampler2D userTexture;
-uniform sampler2D lightTexture;
+
+const float sqrt2 = sqrt(2.0);
 
 void main() {
-    fragColor = vec4(texCoord, 0.0, 1.0);
+    vec2 pixelRatio = vec2(viewportSize) / float(min(viewportSize.x, viewportSize.y));
+    float timeTheta = time / 2000.0 * PI;
+    vec2 centerDelta = (texCoord - vec2(0.5, 0.5)) * pixelRatio;
+    float invTheta = atan(centerDelta.y, centerDelta.x);
+    float tweakTheta = userParam.x * PI;
+
+    vec2 rotatedUv = (vec2(cos(invTheta + tweakTheta), sin(invTheta + tweakTheta)) * distance(texCoord * pixelRatio, vec2(0.5, 0.5) * pixelRatio) * 2.0) / pixelRatio + vec2(0.5, 0.5);
+        
+        fragColor = mix(
+            texture(userTexture, rotatedUv ),
+            vec4(rotatedUv, 0.0, 1.0),
+            0.5
+        );
 }
 </textarea>
-        <img id="glimg" src="scene.png" hidden>
-        <img id="lightimg" src="light.png" hidden>
+        <img id="glimg" src="sample.png" hidden>
     </div>
     <div id="controlsd">
-        <button id="bcompile">Compile</button>
-        <div class="dfc"><input type="range" id="customx" min="-1" max="1" step="0.05" value="0"><label
-                for="customx">X</label></div>
-        <div class="dfc"><input type="range" id="customy" min="-1" max="1" step="0.05" value="0"><label
-                for="customy">Y</label></div>
-        <div class="dfc"><input type="range" id="customz" min="-1" max="1" step="0.05" value="0"><label
-                for="customz">Z</label></div>
-        <div class="dfc"><input type="range" id="customw" min="-1" max="1" step="0.05" value="1"><label
-                for="customw">W</label></div>
-        <div class="dfc"><input type="checkbox" id="usepxviewport"><label for="usepxviewport">Use absolute
-                viewport</label></div>
-        <p>Status: <span id="glstatus" class="good">Compiled</span></p>
+        <br>
+        <div>
+            <button style="display: inline-block;" id="compile-button">Compile</button>
+            <p style="display: inline-block;">Status: <span id="glstatus" class="good">Compiled</span></p>
+        </div>
+        <div class="dfc">
+            <input type="range" id="custom-x" min="-1" max="1" step="0.01" value="0">
+            <label for="custom-x">X (<span id="custom-x-value">0</span>)</label>
+        </div>
+        <div class="dfc">
+            <input type="range" id="custom-y" min="-1" max="1" step="0.01" value="0">
+            <label for="custom-y">Y (<span id="custom-y-value">0</span>)</label>
+        </div>
+        <div class="dfc">
+            <input type="range" id="custom-z" min="-1" max="1" step="0.01" value="0">
+            <label for="custom-z">Z (<span id="custom-z-value">0</span>)</label>
+        </div>
+        <div class="dfc">
+            <input type="range" id="custom-w" min="-1" max="1" step="0.01" value="0">
+            <label for="custom-w">W (<span id="custom-w-value">0</span>)</label>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; width: fit-content; gap: 8px;">
+            <label style="grid-column: 1; grid-row: 1;" for="wrap-x">X-axis texture wrapping: </label>
+            <select style="grid-column: 2; grid-row: 1;" id="wrap-x">
+                <option value="repeat">Repeat</option>
+                <option value="clamp">Clamp</option>
+                <option value="mirror">Repeat (Mirrored)</option>
+            </select>
+
+            <label style="grid-column: 1; grid-row: 2;" for="wrap-y">Y-axis texture wrapping: </label>
+            <select style="grid-column: 2; grid-row: 2;" id="wrap-y">
+                <option value="repeat">Repeat</option>
+                <option value="clamp">Clamp</option>
+                <option value="mirror">Repeat (Mirrored)</option>
+            </select>
+        </div>
+        <div>
+            <pre id="error" hidden></pre>
+        </div>
     </div>
 </body>
 

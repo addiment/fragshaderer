@@ -1,3 +1,24 @@
+* {
+    box-sizing: border-box;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    /* fix for Chrome */
+    font-feature-settings: 'liga' 1, 'calt' 1;
+    font-size: 12pt;
+}
+
+@supports (font-variation-settings: normal) {
+    * {
+        font-family: 'InterVariable', 'Inter', system-ui, -apple-system, sans-serif;
+    }
+}
+
+canvas {
+    border: solid 1px #000;
+    flex: 0 0 auto;
+    align-self: flex-start;
+}
+
+
 .good {
     color: limegreen
 }
@@ -7,25 +28,32 @@
 }
 
 #ccontain {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: stretch;
+    justify-content: stretch;
     width: fit-content;
     height: fit-content
 }
 
-textarea {
-    width: 640px;
-    height: 480px;
-    resize: none;
+p {
+    margin: 0;
 }
 
-div#controlsd {
+textarea {
     margin: 0;
-    margin-top: 4px;
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: space-between;
-    align-items: center;
-    width: fit-content;
-    gap: 16px;
+    width: 640px;
+    height: 480px;
+    resize: vertical;
+    border: solid 1px #000;
+    outline: none;
+    border-radius: 0;
+}
+
+textarea,
+pre {
+    font-family: monospace;
+    font-size: 12pt;
 }
 
 div.dfc {
@@ -33,8 +61,23 @@ div.dfc {
     flex-flow: row nowrap;
     justify-content: space-between;
     align-items: center;
+    width: fit-content;
+    height: fit-content;
 }
 
-p {
-    margin: 16px;
+pre#error {
+    background-color: hsl(320, 100%, 20%);
+    color: hsl(50, 100%, 50%);
+    width: fit-content;
+    height: fit-content;
+    padding: 8px;
+    border: solid hsla(50, 100%, 50%, 1.0) 2px;
+    border-radius: 4px;
+    box-shadow: 0 0 0 3px hsl(320, 100%, 20%);
+    margin: 3px;
+}
+
+pre#error::selection {
+    background-color: hsl(50, 100%, 50%);
+    color: hsl(320, 100%, 20%);
 }
